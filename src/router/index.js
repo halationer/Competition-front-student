@@ -9,7 +9,19 @@ export default new Router({
     {
       path: '/',
       name: 'Main',
-      component: ()=>import('@/components')
+      component: ()=>import('@/components'),
+      children: [
+          {
+            path: '/competitions',
+            name: 'Competitions',
+            component: () => import('@/components/views/competitions')
+          },
+          {
+            path: '/detail',
+            name: 'Detail',
+            component: () => import('@/components/views/detail-competition')
+          }
+      ]
     },
     {
       path: '/login',
