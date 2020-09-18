@@ -17,7 +17,14 @@
                 <el-col :span="7">{{student.gender?"男":"女"}}</el-col>
                 <el-col :span="4" class="img-col">
                     <div class="img">
-                        <img :src="student.photo"/>
+                        <el-upload
+                        :auto-upload="false"
+                        action="#"
+                        class="avatar-uploader"
+                        :show-file-list="false">
+                            <img v-if="student.photo" :src="student.photo" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
                     </div>
                     <el-button v-if="upload.url" size="mini" type="primary" plain>上传</el-button>
                 </el-col>
@@ -72,6 +79,8 @@ export default {
                 url: null,
             }
         }
+    },
+    methods: {
     }
 }
 </script>
@@ -89,23 +98,17 @@ export default {
     .table{
         margin: 3px;
     }
-    img{
-        max-height: 100%;
-        max-width: 100%;
-        margin: auto;
-    }
     .img{
         width: 100%;
         height: 400%;
         box-sizing: border-box;
-        position: absolute;
-        display: flex;
     }
     .el-col{
         height: 45px;
         line-height: 45px;
         padding-left: 1em;
         position: relative;
+        z-index: 99;
     }
     .el-col:hover{
         background: #e8eef7;
@@ -131,5 +134,23 @@ export default {
         height: 1px;
         background: #C1D1DB;
         margin: 10px 0 20px 0;
+    }
+
+    .avatar-uploader{
+        width: 100%;
+        height: 100%;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 100%;
+        height: 100%;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        max-height: 100%;
+        max-width: 100%;
+        margin: auto;
     }
 </style>
