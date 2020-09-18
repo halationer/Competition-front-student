@@ -29,7 +29,13 @@
             style="width: 100%"> <!--这里必不能带()-->
 
             <!-- 属性列 -->
-            <el-table-column prop="competitionName" label="竞赛名称" min-width="100px"></el-table-column>
+            <el-table-column label="竞赛名称" min-width="100px">
+                <template slot-scope="scope">
+                    <span @click="compInfo(scope.row.competitionId)" title="点击查看竞赛详情" id="compInfo">
+                        {{scope.row.competitionName}}
+                    </span>
+                </template>
+            </el-table-column>
             <el-table-column prop="createTime" label="报名时间" min-width="200px"></el-table-column>
             <el-table-column prop="teamName" label="队伍名称" v-if="show.type">
                 <template slot-scope="scope">
@@ -168,10 +174,13 @@ export default {
             this.getPage()
         },
         showTable(row) {
-
+            console.log(row)
         },
         cancel(id) {
-
+            console.log(id)
+        },
+        compInfo(compId) {
+            console.log(compId)
         }
     },
     created() {
@@ -181,6 +190,13 @@ export default {
 </script>
 
 <style scoped>
+    #compInfo{
+        color: rgb(63, 63, 230);
+    }
+    #compInfo:hover{
+        cursor: pointer;
+        color: rgb(218, 33, 33);
+    }
     .el-table{
         margin-top: 5px;
     }
