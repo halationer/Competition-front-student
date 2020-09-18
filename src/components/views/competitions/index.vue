@@ -7,7 +7,7 @@
         <span>中国大学生数学建模竞赛</span>
         <div class="bottom clearfix">
           <time class="time">2020.09.01-2020.10.01</time>
-          <el-button type="text" class="button" @click="getDetail">参加比赛</el-button>
+          <el-button type="text" class="button" @click="getDetail">查看详情</el-button>
         </div>
       </div>
     </el-card>
@@ -23,8 +23,9 @@ export default {
     };
   },
   methods: {
-    getDetail(id) {
+    getDetail() {
       
+       this.$router.replace('/detail')
     }
   }
 }
