@@ -32,6 +32,9 @@ export default {
     name: 'Index',
     components: {
         Menu
+    },
+    methods: {
+      handleCommand() {}
     }
 }
 </script>

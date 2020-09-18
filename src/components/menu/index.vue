@@ -11,12 +11,12 @@
         <span slot="title">竞赛库</span>
       </el-menu-item>
 
-    <el-menu-item index="2">
+      <el-menu-item index="/my-comp">
         <i class="el-icon-s-home"></i>
         <span slot="title">我的竞赛</span>
       </el-menu-item>
       
-      <el-menu-item index="3">
+      <el-menu-item index="/my-info">
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人信息</span>
       </el-menu-item>

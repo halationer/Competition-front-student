@@ -20,7 +20,17 @@ export default new Router({
             path: '/detail',
             name: 'Detail',
             component: () => import('@/components/views/detail-competition')
-          }
+          },
+          {
+            path: "/my-comp",
+            name: "MyComp",
+            component: () => import('@/components/views/mycomp')
+          },
+          {
+            path: "/my-info",
+            name: "MyInfo",
+            component: () => import('@/components/views/myinfo')
+          },
       ]
     },
     {
