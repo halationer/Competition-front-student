@@ -5,7 +5,10 @@
     <div class="wrap">
         <div class="table">
             <el-row>
-                <el-col :span="20">基本信息</el-col>
+                <el-col :span="20">
+                    <span>基本信息</span>
+                    <el-button size="mini" type="primary" plain @click="changePassword">修改密码</el-button>
+                </el-col>
                 <el-col :span="4">
                     <span>照片</span>
                 </el-col>
@@ -103,6 +106,7 @@ export default {
         },
         changeEmail() { this.change("email") },
         changeTel() { this.change("tel") },
+        changePassword() { this.change("password") },
     }
 }
 </script>

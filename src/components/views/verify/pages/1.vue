@@ -10,10 +10,10 @@
             <el-form-item label="旧密码">
                 <el-input v-model="request.oldPassword" placeholder="请输入当前密码"></el-input>
             </el-form-item>
-            <el-form-item label="新密码">
+            <el-form-item label="新密码" v-if="type==='password'">
                 <el-input v-model="request.newPassword" placeholder="请输入新密码"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码">
+            <el-form-item label="确认密码" v-if="type==='password'">
                 <el-input v-model="request.checkPassword" placeholder="请再次输入新密码"></el-input>
             </el-form-item>
         </div>
