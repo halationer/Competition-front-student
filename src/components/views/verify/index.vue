@@ -2,7 +2,7 @@
     <div class="verify-body">
         <div v-for="method in methods">
             <div class="divider"></div>
-            <div class="method">
+            <div class="method" @click="verifyPage(method)">
                 <i :class="method.icon"></i>
                 {{method.name}}
             </div>
@@ -16,15 +16,18 @@ export default {
     data() {
         return {
             methods: [
-                {name:"密码验证", icon:"el-icon-key"},
-                {name:"邮箱验证", icon:"el-icon-message"},
-                {name:"短信验证", icon:"el-icon-chat-line-round"},
+                {value: 'password', name:"密码验证", icon:"el-icon-key"},
+                {value: 'email', name:"邮箱验证", icon:"el-icon-message"},
+                {value: 'tel', name:"短信验证", icon:"el-icon-chat-line-round"},
             ]
         }
     },
     methods: {
         verifyPage(method) {
-            console.log(method.name)
+            this.$router.push({
+                path: 'verify',
+                query: {method: method.value, type: this.type}
+            })
         }
     }
 }

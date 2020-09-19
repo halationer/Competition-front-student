@@ -36,6 +36,11 @@ export default new Router({
             path: "/my-info",
             name: "MyInfo",
             component: () => import('@/components/views/myinfo')
+          },
+          {
+            path: "/verify",
+            name: "Verify",
+            component: () => import('@/components/views/verify/pages/1')
           }
       ]
     },
