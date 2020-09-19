@@ -45,21 +45,33 @@
                 <el-col :span="3">邮箱</el-col>
                 <el-col :span="7">
                     <span>{{student.email}}</span>
-                    <el-button size="mini" type="primary" plain>修改</el-button>
+                    <el-button size="mini" type="primary" plain @click="changeEmail">修改</el-button>
                 </el-col>
                 <el-col :span="3">手机</el-col>
                 <el-col :span="7">
                     <span>{{student.tel}}</span>
-                    <el-button size="mini" type="primary" plain>修改</el-button>
+                    <el-button size="mini" type="primary" plain @click="changeTel">修改</el-button>
                 </el-col>
             </el-row>
         </div>
     </div>
+
+    <el-drawer
+    :visible.sync="verify.show"
+    :withHeader="false"
+    size="203"
+    direction="btt">
+        <h3 class="verify-tip">选择验证方式</h3>
+        <Verify v-if="verify.show" :type="verify.type"></Verify>
+    </el-drawer>
 </div>
 </template>
 
 <script>
 export default {
+    components: {
+        Verify: ()=>import('@/components/views/verify'),
+    },
     data() {
         return {
             student: {
@@ -77,15 +89,30 @@ export default {
             },
             upload: {
                 url: null,
+            },
+            verify: {
+                show: false,
+                type: null,
             }
         }
     },
     methods: {
+        change(type) {
+            this.verify.type = type
+            this.verify.show = true
+        },
+        changeEmail() { this.change("email") },
+        changeTel() { this.change("tel") },
     }
 }
 </script>
 
 <style scoped>
+    .verify-tip{
+        margin-left: 10px;
+        margin-top: 14px;
+        margin-bottom: 5px;
+    }
     .body{
         width: 90%;
         min-width: 715px;
