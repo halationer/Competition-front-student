@@ -21,15 +21,17 @@
                 <el-col :span="4" class="img-col">
                     <div class="img">
                         <el-upload
+                        drag
                         :auto-upload="false"
                         action="#"
                         class="avatar-uploader"
+                        :on-change="photoChange"
                         :show-file-list="false">
                             <img v-if="student.photo" :src="student.photo" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </div>
-                    <el-button v-if="upload.url" size="mini" type="primary" plain>上传</el-button>
+                    <el-button @click="updatePhoto" v-if="upload.file" size="mini" type="primary" plain>上传</el-button>
                 </el-col>
             </el-row>
             <el-row>
@@ -78,20 +80,20 @@ export default {
     data() {
         return {
             student: {
-                numId: "1111111111111",
-                name: "温宇东",
-                tel: "13355558888",
-                email: "xxxxxxx@xx.xx",
-                gender: 1,
-                birthday: "yyyy-MM-dd",
-                academy: "信息科学与工程学院",
-                major: "软件工程",
-                grade: 17,
-                className: 8,
-                photo: "http://39.99.247.252:8080/group1/M00/00/00/J2P3_F9iLiiAVnjFAAYoxAJUXRw347.png",
+                numId: null,
+                name: null,
+                tel: null,
+                email: null,
+                gender: null,
+                birthday: null,
+                academy: null,
+                major: null,
+                grade: null,
+                className: null,
+                photo: null,
             },
             upload: {
-                url: null,
+                file: null,
             },
             verify: {
                 show: false,
@@ -104,7 +106,7 @@ export default {
     },
     methods: {
         getInfo(){
-            this.axios.get("stu/info", res=>{
+            this.axios.get("student/info", res=>{
                 this.student = res.data
             }, {id: this.id})
         },
@@ -115,6 +117,17 @@ export default {
         changeEmail() { this.change("email") },
         changeTel() { this.change("tel") },
         changePassword() { this.change("password") },
+        //图片改变时
+        photoChange(file, fileList) {
+            this.upload.file = file
+            this.student.photo = URL.createObjectURL(file.raw)
+        },
+        updatePhoto() {
+            this.axios.post("student/update-photo", res=>{
+                this.student = res.data
+                this.upload.file = null
+            }, {id: this.id, file: this.upload.file.raw})
+        }
     },
     created() {
         this.getInfo()

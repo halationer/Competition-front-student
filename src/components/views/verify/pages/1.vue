@@ -66,7 +66,7 @@ export default {
     },
     methods: {
         sendEmail() {
-            this.axios.post("stu/email-check",()=>{},this.request)
+            this.axios.post("student/email-check",()=>{},this.request)
         }
     }
 }

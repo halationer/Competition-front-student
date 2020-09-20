@@ -15,6 +15,7 @@ export default {
   margin: 0;
   padding: 0;
 }
+.avatar-uploader .el-upload-dragger,
 .avatar-uploader .el-upload{
   width: 100%;
   height: 100%;
