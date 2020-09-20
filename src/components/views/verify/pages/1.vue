@@ -20,8 +20,8 @@
 
         <div v-if="method==='email'">
             <el-form-item>
-                <h3 class="email-tip">您当前绑定的邮箱是{{request.email}}，点击</h3>
-                <el-button @click="" class="email" size="mini" type="primary">发送邮件</el-button>
+                <h3 class="email-tip">您当前绑定的邮箱是{{request.to}}，点击</h3>
+                <el-button @click="sendEmail" class="email" size="mini" type="primary">发送邮件</el-button>
                 <h3 class="email-tip">以验证身份信息</h3>
             </el-form-item>
         </div>
@@ -51,17 +51,23 @@ export default {
                 checkPassword: null,
             },
             request: {
+                stuId: 1,
                 oldPassword: null,
-                email: '666666@66.com',
+                to: '1124792103@qq.com',
                 tel: 66666666,
                 verifyCode: null,
                 newPassword: null,
-            }
+            },
         }
     },
     computed: {
         method() {return this.$route.query.method},
         type() {return this.$route.query.type},
+    },
+    methods: {
+        sendEmail() {
+            this.axios.post("stu/email-check",()=>{},this.request)
+        }
     }
 }
 </script>
