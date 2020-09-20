@@ -40,9 +40,9 @@
             </el-row>
             <el-row>
                 <el-col :span="3">学院</el-col>
-                <el-col :span="7">{{student.numId}}</el-col>
+                <el-col :span="7">{{student.academy}}</el-col>
                 <el-col :span="3">专业班级</el-col>
-                <el-col :span="7">{{student.major+student.grade}}-{{student.class}}班</el-col>
+                <el-col :span="7">{{student.major+student.grade}}-{{student.className}}班</el-col>
             </el-row>
             <el-row>
                 <el-col :span="3">邮箱</el-col>
@@ -87,7 +87,7 @@ export default {
                 academy: "信息科学与工程学院",
                 major: "软件工程",
                 grade: 17,
-                class: 8,
+                className: 8,
                 photo: "http://39.99.247.252:8080/group1/M00/00/00/J2P3_F9iLiiAVnjFAAYoxAJUXRw347.png",
             },
             upload: {
@@ -99,7 +99,15 @@ export default {
             }
         }
     },
+    computed: {
+        id() {return 1},
+    },
     methods: {
+        getInfo(){
+            this.axios.get("stu/info", res=>{
+                this.student = res.data
+            }, {id: this.id})
+        },
         change(type) {
             this.verify.type = type
             this.verify.show = true
@@ -107,6 +115,9 @@ export default {
         changeEmail() { this.change("email") },
         changeTel() { this.change("tel") },
         changePassword() { this.change("password") },
+    },
+    created() {
+        this.getInfo()
     }
 }
 </script>
