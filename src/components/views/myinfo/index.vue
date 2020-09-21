@@ -122,8 +122,9 @@ export default {
         photoChange(file, fileList) {
             const isJPG = file.raw.type === 'image/jpeg'
             const isPNG = file.raw.type === 'image/png'
-            if(!isJPG && !isPNG) {
-                this.$message.error("图片只能上传jpg/jpeg/png格式")
+            const isBMP = file.raw.type === 'image/bmp'
+            if(!isJPG && !isPNG && !isBMP) {
+                this.$message.error("图片只能上传jpg/bmp/png格式")
                 return
             }
             this.upload.file = file
@@ -216,7 +217,7 @@ export default {
         margin: auto;
     }
     .photo-title:after{
-        content: '(jpg/jpeg/png)';
+        content: '(jpg/png/bmp)';
         color: lightslategrey;
         font-size: 10px;
     }
