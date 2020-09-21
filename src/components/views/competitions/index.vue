@@ -25,7 +25,7 @@ export default {
   methods: {
     getDetail() {
       
-       this.$router.replace('/detail')
+      // this.$router.replace('/detail')
     }
   }
 }

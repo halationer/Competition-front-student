@@ -1,4 +1,4 @@
 export default {
   setToken: (state,token) => {state.token = token},
-  setUsername: (state,username) => {state.username = username}
+  setNumId: (state,numId) => {state.numId = numId}
 }

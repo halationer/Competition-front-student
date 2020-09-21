@@ -5,12 +5,13 @@
         <el-col :span="8" :offset="8">燕山大学竞赛管理系统</el-col>
         <el-col :span="6" :offset="2">
           <el-dropdown split-button type="primary" @command="handleCommand">
-           <!-- {{getUsername}} --> 
+            {{name}}
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="Personal">个人设置</el-dropdown-item>
               <el-dropdown-item command="Loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+
         </el-col>
       </el-row>
     </el-header>
@@ -27,13 +28,47 @@
 
 <script>
 import Menu from '@/components/menu'
+import { mapMutations,mapGetters} from 'vuex'
 export default {
     name: 'Index',
+    data() {
+        return {
+          name: ''
+        }
+    },
     components: {
         Menu
     },
+    computed: {
+       ...mapGetters(['getNumId'])
+
+     },
+    created() {
+        this.axios.post('/student/information',response => {
+          if(response.code == 200){
+              this.name = response.data.name
+          }
+          }, {numId:this.getNumId})
+    },
     methods: {
-      handleCommand() {}
+      ...mapMutations(['setToken','setNumId']),
+      loginout() {
+         this.axios.post('/student/logout',response =>{
+           this.axios.setToken(null)
+           this.setToken(null)
+           this.setNumId(null)
+           this.$router.push({
+             path: '/login'
+           })
+         })
+
+      },
+      handleCommand(command) {
+        if(command === 'Loginout'){
+          this.loginout()
+          this.$message('退出登录成功')
+        }
+      }
     }
 }
 </script>

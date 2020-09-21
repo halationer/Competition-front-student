@@ -1,4 +1,4 @@
 export default {
   getToken: state => {return state.token},
-  getUsername: state => {return state.username}
+  getNumId: state => {return state.numId}
 }

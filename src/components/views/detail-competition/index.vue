@@ -50,10 +50,10 @@ export default {
   },
   methods: {
     back() {
-       this.$router.replace('/competitions')
+       //this.$router.replace('/competitions')
     }, 
     submmit() {
-        this.$router.replace('/form')
+       // this.$router.replace('/form')
     }
   }
 }

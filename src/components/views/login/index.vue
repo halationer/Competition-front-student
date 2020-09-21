@@ -6,10 +6,10 @@
   <div class="login-container">
     <el-form ref="form" :model="login" label-width="120px">
       <h3 class="login-title">学生端登录</h3>
-      <el-form-item label="学号" prop="code">
-        <el-input v-model="login.username"></el-input>
+      <el-form-item label="学号" prop="numId">
+        <el-input v-model="login.numId"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="name">
+      <el-form-item label="密码" prop="password">
         <el-input v-model="login.password" type="password" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item>
@@ -28,33 +28,31 @@
 </template>
 
 <script>
-  import {
-    mapMutations
-  } from 'vuex'
+  import {mapMutations} from 'vuex'
   export default {
     name: 'Login',
     data() {
       return {
         imgSrc: require('@/assets/background.jpg'),
         login: {
-          username: '',
+          numId: '',
           password: ''
         }
       }
     },
     created() {},
     methods: {
-      ...mapMutations(['setToken', 'setUsername']),
+      ...mapMutations(['setToken', 'setNumId']),
       loginform() {
-        this.axios.post('/ums-user/token', response => {
+        this.axios.post('/student/token', response => {
           if (response.code == 200) {
-            this.axios.setToken(response.obj)
-            this.setToken(response.obj)
-            this.$router.push({
+            this.axios.setToken(response.data)
+            this.setToken(response.data)
+            this.setNumId(this.login.numId)
+            this.$router.replace({
               path: '/'
             })
-            this.setUsername(this.login.username)
-          }
+          } 
         }, this.login)
 
       }
