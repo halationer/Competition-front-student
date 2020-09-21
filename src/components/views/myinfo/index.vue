@@ -10,7 +10,7 @@
                     <el-button size="mini" type="primary" plain @click="changePassword">修改密码</el-button>
                 </el-col>
                 <el-col :span="4">
-                    <span>照片</span>
+                    <span class="photo-title">照片</span>
                 </el-col>
             </el-row>
             <el-row>
@@ -120,6 +120,12 @@ export default {
         changePassword() { this.change("password") },
         //图片改变时
         photoChange(file, fileList) {
+            const isJPG = file.raw.type === 'image/jpeg'
+            const isPNG = file.raw.type === 'image/png'
+            if(!isJPG && !isPNG) {
+                this.$message.error("图片只能上传jpg/jpeg/png格式")
+                return
+            }
             this.upload.file = file
             this.student.photo = URL.createObjectURL(file.raw)
         },
@@ -208,5 +214,10 @@ export default {
         max-height: 100%;
         max-width: 100%;
         margin: auto;
+    }
+    .photo-title:after{
+        content: '(jpg/jpeg/png)';
+        color: lightslategrey;
+        font-size: 10px;
     }
 </style>
