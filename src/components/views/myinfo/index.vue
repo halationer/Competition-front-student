@@ -123,6 +123,11 @@ export default {
             const isJPG = file.raw.type === 'image/jpeg'
             const isPNG = file.raw.type === 'image/png'
             const isBMP = file.raw.type === 'image/bmp'
+            const isLt10M = file.raw.size / 1024 / 1024 < 10
+            if(!isLt10M) {
+                this.$message.error("图片不能大于10M")
+                return
+            }
             if(!isJPG && !isPNG && !isBMP) {
                 this.$message.error("图片只能上传jpg/bmp/png格式")
                 return
