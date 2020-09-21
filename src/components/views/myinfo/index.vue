@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     components: {
         Verify: ()=>import('@/components/views/verify'),
@@ -102,13 +103,13 @@ export default {
         }
     },
     computed: {
-        id() {return 1},
+        ...mapGetters(['getNumId']),
     },
     methods: {
         getInfo(){
-            this.axios.get("student/info", res=>{
+            this.axios.post("student/information", res=>{
                 this.student = res.data
-            }, {id: this.id})
+            }, {numId: this.getNumId})
         },
         change(type) {
             this.verify.type = type
@@ -126,7 +127,7 @@ export default {
             this.axios.post("student/update-photo", res=>{
                 this.student = res.data
                 this.upload.file = null
-            }, {id: this.id, file: this.upload.file.raw})
+            }, {id: this.student.id, file: this.upload.file.raw})
         }
     },
     created() {
