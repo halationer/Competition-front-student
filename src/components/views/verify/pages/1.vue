@@ -5,16 +5,22 @@
         <el-step title="修改信息" icon="el-icon-edit"></el-step>
         <el-step title="修改完成" icon="el-icon-finished"></el-step>
     </el-steps>
-    <el-form :model="request" label-width="80px">
+    <el-form :model="request" label-width="80px" :rules="rules" ref="request">
         <div  v-if="method==='password'">
-            <el-form-item label="旧密码">
-                <el-input v-model="request.oldPassword" placeholder="请输入当前密码"></el-input>
+            <el-form-item label="旧密码" prop="oldPassword">
+                <el-input type="password" v-model="request.oldPassword" placeholder="请输入当前密码"></el-input>
             </el-form-item>
-            <el-form-item label="新密码" v-if="type==='password'">
-                <el-input v-model="request.newPassword" placeholder="请输入新密码"></el-input>
+            <el-form-item label="新密码" v-if="type==='password'" prop="newPassword">
+                <el-input type="password" v-model="request.newPassword" placeholder="请输入新密码"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" v-if="type==='password'">
-                <el-input v-model="request.checkPassword" placeholder="请再次输入新密码"></el-input>
+            <el-form-item label="确认密码" v-if="type==='password'" prop="checkPassword">
+                <el-input type="password" v-model="request.checkPassword" placeholder="请再次输入新密码"></el-input>
+            </el-form-item>
+            <el-form-item label="新邮箱" v-if="type==='email'" prop="newEmail">
+                <el-input v-model="request.newEmail" placeholder="请输入新邮箱"></el-input>
+            </el-form-item>
+            <el-form-item label="新电话" v-if="type==='tel'" prop="newTel">
+                <el-input v-model="request.newTel" placeholder="请输入新电话"></el-input>
             </el-form-item>
         </div>
 
@@ -37,37 +43,103 @@
             </el-form-item>
         </div>
         
-        <el-button @click="" class="submit" size="mini" type="primary" v-if="method!=='email'">下一步</el-button>
+        <el-button @click="next[type]" class="submit" size="mini" type="primary" v-if="method==='password'">提交修改</el-button>
+        <el-button @click="" class="submit" size="mini" type="primary" v-if="method==='tel'">下一步</el-button>
     </el-form>
 </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             step: 0,
-            check: {
-                checkPassword: null,
-            },
             request: {
-                stuId: 1,
+                checkPassword: null,
+                stuId: null,
                 oldPassword: null,
-                to: '1124792103@qq.com',
-                tel: 66666666,
+                to: null,
+                tel: null,
                 verifyCode: null,
                 newPassword: null,
+                newEmail: null,
+                newTel: null,
             },
+            next: {
+                password: this.changePassword,
+                email: this.changeEmail,
+                tel: this.changeTel,
+            },
+            rules: {
+                oldPassword: [
+                    { required: true, message: '请输入旧密码', trigger: 'blur' },
+                    { validator: this.rightPassword, trigger: 'blur' },
+                ],
+                newPassword: [
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                ],
+                checkPassword: [
+                    { required: true, message: '请输入确认密码', trigger: 'blur' },
+                    { validator: this.samePassword, trigger: 'blur' },
+                ]
+
+            }
         }
     },
     computed: {
         method() {return this.$route.query.method},
         type() {return this.$route.query.type},
+        ...mapGetters(['getNumId']),
     },
     methods: {
         sendEmail() {
             this.axios.post("student/email-check",()=>{},this.request)
-        }
+        },
+        samePassword(rule, value, callback) {
+            if(this.request.newPassword === this.request.checkPassword)
+                callback()
+            else callback(new Error('请输入与新密码相同的密码'))
+        },
+        rightPassword(rule, value, callback) {
+            this.axios.simplePost("student/checkPassword", this.request, {
+                _200:res=>{callback()},
+                _500:res=>{callback(new Error(res.message))}
+            })
+        },
+        changePassword() {
+            this.$refs['request'].validate((valid) => {
+                if(valid) {
+                    this.axios.post("student/changePassword", res=>{
+                        this.$router.push({
+                            path: 'verify-success',
+                            query: {method: this.method}
+                        })
+                    }, this.request)
+                } else return false
+            })
+        },
+        changeEmail() {
+            console.log('change email')
+            // this.axios.post("student/changeEmail", res=>{
+            //     console.log(res.data)
+            // }, this.request)
+        },
+        changeTel() {
+            console.log('change tel')
+            // this.axios.post("student/changeTel", res=>{
+            //     console.log(res.data)
+            // }, this.request)
+        },
+    },
+    created() {
+        this.axios.simplePost("student/information", {numId: this.getNumId}, {
+            _200:res=>{
+                this.request.stuId = res.data.id
+                this.request.to = res.data.email
+                this.request.tel = res.data.tel
+            }
+        })
     }
 }
 </script>

@@ -44,11 +44,9 @@ export default {
 
      },
     created() {
-        this.axios.post('/student/information',response => {
-          if(response.code == 200){
-              this.name = response.data.name
-          }
-          }, {numId:this.getNumId})
+        this.axios.simplePost("student/information", {numId: this.getNumId}, {
+            _200:res=>{this.name = res.data.name}
+        })
     },
     methods: {
       ...mapMutations(['setToken','setNumId']),

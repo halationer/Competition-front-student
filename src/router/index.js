@@ -43,6 +43,11 @@ export default new Router({
             path: "/verify",
             name: "Verify",
             component: () => import('@/components/views/verify/pages/1')
+          },
+          {
+            path: "/verify-success",
+            name: "ChangeSuccess",
+            component: () => import('@/components/views/verify/pages/success')
           }
       ]
     },

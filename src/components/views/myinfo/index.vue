@@ -107,9 +107,9 @@ export default {
     },
     methods: {
         getInfo(){
-            this.axios.post("student/information", res=>{
-                this.student = res.data
-            }, {numId: this.getNumId})
+            this.axios.simplePost("student/information", {numId: this.getNumId},{
+                _200:res=>{this.student = res.data}
+            })
         },
         change(type) {
             this.verify.type = type

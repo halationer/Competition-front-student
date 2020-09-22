@@ -36,6 +36,27 @@ export default {
       loading.close()
     })
   },
+  simpleGet(url, callbacks = null, params = {}) {
+    axios.get(url, {params}).then(res => {
+      if(callbacks == null) return
+      if(res.data.code === 200 && callbacks._200!=null) {
+        callbacks._200(res.data)
+      } else if(res.data.code === 403 && callbacks._403!=null) {
+        callbacks._403(res.data)
+      } else if(res.data.code === 500 && callbacks._500!=null) {
+        callbacks._500(res.data)
+      } else if(callbacks._else!=null){
+        callbacks._else(res.data)
+      }
+    }).catch(err => {
+      if(callbacks!=null && callbacks._err!=null)
+        callbacks._err(err)
+      else Message.error(err)
+    }).finally(() => {
+      if(callbacks!=null && callbacks._fin!=null)
+        callbacks._fin()
+    })
+  },
   post(url, callback, params = {},msg) {
       const formData = new FormData()
       for (let key in params) {
@@ -70,6 +91,30 @@ export default {
         }).finally(() => {
           loading.close()
         })
+    },
+    simplePost(url, params = {}, callbacks = null) {
+      const formData = new FormData()
+      for (let key in params)
+        formData.append(key, params[key])
+      axios.post(url, formData).then(res => {
+        if(callbacks == null) return
+        if(res.data.code === 200 && callbacks._200!=null) {
+          callbacks._200(res.data)
+        } else if(res.data.code === 403 && callbacks._403!=null) {
+          callbacks._403(res.data)
+        } else if(res.data.code === 500 && callbacks._500!=null) {
+          callbacks._500(res.data)
+        } else if(callbacks._else!=null){
+          callbacks._else(res.data)
+        }
+      }).catch(err => {
+        if(callbacks!=null && callbacks._err!=null)
+          callbacks._err(err)
+        else Message.error(err)
+      }).finally(() => {
+        if(callbacks!=null && callbacks._fin!=null)
+          callbacks._fin()
+      })
     },
   /**如果是删除不用传第四个参数 如果是恢复 传back即可*/
   del(url, callback, params = {}, flag = 'del') {
