@@ -196,6 +196,10 @@ export default {
         position: absolute;
         right: 5px;
         top: 9px;
+        opacity: 0.6;
+    }
+    .el-button:hover{
+        opacity: 1;
     }
     .split{
         width: 100%;

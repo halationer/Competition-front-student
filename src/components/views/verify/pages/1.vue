@@ -19,7 +19,7 @@
             <el-form-item label="新邮箱" v-if="type==='email'" prop="newEmail">
                 <el-input v-model="request.newEmail" placeholder="请输入新邮箱"></el-input>
             </el-form-item>
-            <el-form-item label="新电话" v-if="type==='tel'" prop="newTel">
+            <el-form-item label="新手机" v-if="type==='tel'" prop="newTel">
                 <el-input v-model="request.newTel" placeholder="请输入新电话"></el-input>
             </el-form-item>
         </div>
@@ -82,8 +82,20 @@ export default {
                 checkPassword: [
                     { required: true, message: '请输入确认密码', trigger: 'blur' },
                     { validator: this.samePassword, trigger: 'blur' },
+                ],
+                newEmail: [
+                    { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                ],
+                newTel: [
+                    { required: true, message: '请输入手机号码', trigger: 'blur' },
+                    { min: 11, max: 11, message: '请输入11位手机号码', trigger: 'blur' },
+                    {
+                        pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+                        message: "请输入正确的手机号码",
+                        trigger: 'blur'
+                    }
                 ]
-
             }
         }
     },
@@ -113,23 +125,33 @@ export default {
                     this.axios.post("student/changePassword", res=>{
                         this.$router.push({
                             path: 'verify-success',
-                            query: {method: this.method}
                         })
                     }, this.request)
                 } else return false
             })
         },
         changeEmail() {
-            console.log('change email')
-            // this.axios.post("student/changeEmail", res=>{
-            //     console.log(res.data)
-            // }, this.request)
+            this.$refs['request'].validate((valid) => {
+                if(valid) {
+                    this.axios.post("student/changeEmail", res=>{
+                        this.$message.success(res.data + " " + res.message)
+                        // this.$router.push({
+                        //     path: 'verify-success',
+                        // })
+                    }, this.request)
+                } else return false
+            })
         },
         changeTel() {
-            console.log('change tel')
-            // this.axios.post("student/changeTel", res=>{
-            //     console.log(res.data)
-            // }, this.request)
+            this.$refs['request'].validate((valid) => {
+                if(valid) {
+                    this.axios.post("student/changeTel", res=>{
+                        this.$router.push({
+                            path: 'verify-success',
+                        })
+                    }, this.request)
+                } else return false
+            })
         },
     },
     created() {
