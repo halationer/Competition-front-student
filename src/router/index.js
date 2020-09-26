@@ -45,7 +45,12 @@ export default new Router({
             component: () => import('@/components/views/verify/pages/1')
           },
           {
-            path: "/verify-success",
+            path: "/change",
+            name: "Change",
+            component: () => import('@/components/views/verify/pages/2')
+          },
+          {
+            path: "/change-success",
             name: "ChangeSuccess",
             component: () => import('@/components/views/verify/pages/success')
           }

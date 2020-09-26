@@ -1,41 +1,31 @@
 <template>
 <div class="body">
     <el-steps :active="step" align-center>
-        <el-step title="身份验证" icon="el-icon-lock" v-if="method!=='password'"></el-step>
+        <el-step title="身份验证" icon="el-icon-lock"></el-step>
         <el-step title="修改信息" icon="el-icon-edit"></el-step>
         <el-step title="修改完成" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-form :model="request" label-width="80px" :rules="rules" ref="request">
-        <div  v-if="method==='password'">
-            <el-form-item label="旧密码" prop="oldPassword">
-                <el-input type="password" v-model="request.oldPassword" placeholder="请输入当前密码"></el-input>
-            </el-form-item>
-            <el-form-item label="新密码" v-if="type==='password'" prop="newPassword">
+
+        <div  v-if="type==='password'">
+            <el-form-item label="新密码" prop="newPassword">
                 <el-input type="password" v-model="request.newPassword" placeholder="请输入新密码"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" v-if="type==='password'" prop="checkPassword">
+            <el-form-item label="确认密码" prop="checkPassword">
                 <el-input type="password" v-model="request.checkPassword" placeholder="请再次输入新密码"></el-input>
             </el-form-item>
-            <el-form-item label="新邮箱" v-if="type==='email'" prop="newEmail">
+        </div>
+
+        <div  v-if="type==='email'">
+            <el-input class="none-form-item"></el-input>
+            <el-form-item label="新邮箱" prop="newEmail">
                 <el-input v-model="request.newEmail" placeholder="请输入新邮箱"></el-input>
             </el-form-item>
-            <el-form-item label="新手机" v-if="type==='tel'" prop="newTel">
-                <el-input v-model="request.newTel" placeholder="请输入新电话"></el-input>
-            </el-form-item>
         </div>
 
-        <div v-if="method==='email'">
-            <el-form-item>
-                <h3 class="email-tip">您当前绑定的邮箱是{{request.to}}，点击</h3>
-                <el-button @click="sendEmail" class="email" size="mini" type="primary">发送邮件</el-button>
-                <h3 class="email-tip">以验证身份信息</h3>
-            </el-form-item>
-        </div>
-
-        <div v-if="method==='tel'">
-            <el-form-item>
-                <h3 class="tel-tip">您当前的手机号是：</h3>
-                <el-input class="tel" v-model="request.tel" disabled></el-input>
+        <div v-if="type==='tel'">
+            <el-form-item label="新手机" prop="newTel">
+                <el-input v-model="request.newTel" placeholder="请输入新手机"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-input class="vcode" v-model="request.verifyCode" placeholder="请输入短信验证码"></el-input>
@@ -43,8 +33,7 @@
             </el-form-item>
         </div>
         
-        <el-button @click="next[type]" class="submit" size="mini" type="primary" v-if="method==='password'">提交修改</el-button>
-        <el-button @click="" class="submit" size="mini" type="primary" v-if="method==='tel'">下一步</el-button>
+        <el-button @click="next[type]" class="submit" size="mini" type="primary">提交修改</el-button>
     </el-form>
 </div>
 </template>
@@ -54,18 +43,14 @@ import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            step: 0,
+            step: 1,
             request: {
-                checkPassword: null,
-                stuId: null,
-                oldPassword: null,
-                to: null,
-                tel: null,
-                verifyCode: null,
+                token: null,
                 newPassword: null,
+                checkPassword: null,
                 newEmail: null,
                 newTel: null,
-                type: null,
+                verifyCode: null,
             },
             next: {
                 password: this.changePassword,
@@ -73,10 +58,6 @@ export default {
                 tel: this.changeTel,
             },
             rules: {
-                oldPassword: [
-                    { required: true, message: '请输入旧密码', trigger: 'blur' },
-                    { validator: this.rightPassword, trigger: 'blur' },
-                ],
                 newPassword: [
                     { required: true, message: '请输入新密码', trigger: 'blur' },
                 ],
@@ -101,7 +82,6 @@ export default {
         }
     },
     computed: {
-        method() {return this.$route.query.method},
         type() {return this.$route.query.type},
         ...mapGetters(['getNumId']),
     },
@@ -123,7 +103,7 @@ export default {
         changePassword() {
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/changePassword", res=>{
+                    this.axios.post("student/token-changePassword", res=>{
                         this.$router.push({
                             path: 'change-success',
                         })
@@ -134,10 +114,10 @@ export default {
         changeEmail() {
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/changeEmail", res=>{
+                    this.axios.post("student/token-changeEmail", res=>{
                         this.$message.success(res.data + " " + res.message)
                         // this.$router.push({
-                        //     path: 'change-success',
+                        //     path: 'verify-success',
                         // })
                     }, this.request)
                 } else return false
@@ -146,7 +126,7 @@ export default {
         changeTel() {
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/changeTel", res=>{
+                    this.axios.post("student/token-changeTel", res=>{
                         this.$router.push({
                             path: 'change-success',
                         })
@@ -156,14 +136,7 @@ export default {
         },
     },
     created() {
-        this.request.type = this.$route.query.type
-        this.axios.simplePost("student/information", {numId: this.getNumId}, {
-            _200:res=>{
-                this.request.stuId = res.data.id
-                this.request.to = res.data.email
-                this.request.tel = res.data.tel
-            }
-        })
+        this.request.token = this.$route.query.token
     }
 }
 </script>
@@ -191,5 +164,8 @@ export default {
 }
 .vcode{
     width: calc(100% - 118px);
+}
+.none-form-item{
+    display: none;
 }
 </style>
