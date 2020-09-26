@@ -60,6 +60,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: () => import('@/components/views/login')
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: () => import('@/components/views/verify/test')
     }
   ]
 })

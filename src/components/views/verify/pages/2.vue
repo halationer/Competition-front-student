@@ -24,12 +24,12 @@
         </div>
 
         <div v-if="type==='tel'">
-            <el-form-item label="新手机" prop="newTel">
-                <el-input v-model="request.newTel" placeholder="请输入新手机"></el-input>
+            <el-form-item label="新手机" prop="tel">
+                <el-input v-model="request.tel" placeholder="请输入新手机"></el-input>
             </el-form-item>
-            <el-form-item>
-                <el-input class="vcode" v-model="request.verifyCode" placeholder="请输入短信验证码"></el-input>
-                <el-button>发送验证码</el-button>
+            <el-form-item prop="verifyCode">
+                <el-input :class="wait.flag?'vcode2':'vcode'" v-model="request.verifyCode" placeholder="请输入短信验证码"></el-input>
+                <el-button @click="sendMessage" id="send-message" :disabled="wait.flag">发送验证码{{wait.flag ? "(" + wait.time + "s)" : ""}}</el-button>
             </el-form-item>
         </div>
         
@@ -49,13 +49,18 @@ export default {
                 newPassword: null,
                 checkPassword: null,
                 newEmail: null,
-                newTel: null,
+                tel: null,
                 verifyCode: null,
             },
             next: {
                 password: this.changePassword,
                 email: this.changeEmail,
                 tel: this.changeTel,
+            },
+            wait: {
+                flag: false,
+                time: null,
+                maxtime: 60,
             },
             rules: {
                 newPassword: [
@@ -69,7 +74,7 @@ export default {
                     { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
                 ],
-                newTel: [
+                tel: [
                     { required: true, message: '请输入手机号码', trigger: 'blur' },
                     { min: 11, max: 11, message: '请输入11位手机号码', trigger: 'blur' },
                     {
@@ -77,17 +82,37 @@ export default {
                         message: "请输入正确的手机号码",
                         trigger: 'blur'
                     }
+                ],
+                verifyCode: [
+                    { required: true, message: '请输入验证码', trigger: 'blur' },
+                    { validator: this.checkCode, trigger: 'blur' },
                 ]
             }
         }
     },
     computed: {
         type() {return this.$route.query.type},
+        method() {return this.$route.query.method},
         ...mapGetters(['getNumId']),
     },
     methods: {
         sendEmail() {
             this.axios.post("student/checkEmail",()=>{},this.request)
+        },
+        waitTimeStart(callback = ()=>{}) {
+            setTimeout(()=>{
+                this.wait.time--
+                if(this.wait.time <= 0) callback()
+                else this.waitTimeStart(callback)
+            }, 1000)
+        },
+        sendMessage() {
+            this.wait.flag = true
+            this.wait.time = this.wait.maxtime
+            this.waitTimeStart(()=>{
+                this.wait.flag = false
+            })
+            this.axios.post("student/send-tel-message",()=>{},this.request)
         },
         samePassword(rule, value, callback) {
             if(this.request.newPassword === this.request.checkPassword)
@@ -101,9 +126,10 @@ export default {
             })
         },
         changePassword() {
+            const url = this.method === 'tel' ? 'student/tel-changePassword' : 'student/token-changePassword'
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/token-changePassword", res=>{
+                    this.axios.post(url, res=>{
                         this.$router.push({
                             path: 'change-success',
                         })
@@ -112,21 +138,20 @@ export default {
             })
         },
         changeEmail() {
+            const url = this.method === 'tel' ? 'student/tel-changeEmail' : "student/token-changeEmail"
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/token-changeEmail", res=>{
+                    this.axios.post(url, res=>{
                         this.$message.success(res.data + " " + res.message)
-                        // this.$router.push({
-                        //     path: 'verify-success',
-                        // })
                     }, this.request)
                 } else return false
             })
         },
         changeTel() {
+            const url = this.method === 'tel' ? 'student/tel-changeTel' : "student/token-changeTel"
             this.$refs['request'].validate((valid) => {
                 if(valid) {
-                    this.axios.post("student/token-changeTel", res=>{
+                    this.axios.post(url, res=>{
                         this.$router.push({
                             path: 'change-success',
                         })
@@ -164,6 +189,9 @@ export default {
 }
 .vcode{
     width: calc(100% - 118px);
+}
+.vcode2{
+    width: calc(100% - 150px);
 }
 .none-form-item{
     display: none;
