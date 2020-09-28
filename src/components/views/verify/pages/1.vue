@@ -6,7 +6,7 @@
         <el-step title="修改完成" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-form :model="request" label-width="80px" :rules="rules" ref="request">
-        <div  v-if="method==='password'">
+        <div  v-if="method==='password' && !flag.flag">
             <el-form-item label="旧密码" prop="oldPassword">
                 <el-input type="password" v-model="request.oldPassword" placeholder="请输入当前密码"></el-input>
             </el-form-item>
@@ -26,6 +26,9 @@
                 <el-input :class="wait.flag?'vcode2':'vcode'" v-model="request.verifyCode" placeholder="请输入短信验证码"></el-input>
                 <el-button @click="sendMessage" id="send-message" :disabled="wait.flag">发送验证码{{wait.flag ? "(" + wait.time + "s)" : ""}}</el-button>
             </el-form-item>
+        </div>
+        <div v-if="flag.flag" style="margin-left:25%;">
+            {{flag.message}}
         </div>
 
         <div v-if="method==='email'">
@@ -47,7 +50,7 @@
             </el-form-item>
         </div>
         
-        <el-button @click="next[type]" class="submit" size="mini" type="primary" v-if="method==='password'">提交修改</el-button>
+        <el-button @click="next[type]" class="submit" size="mini" type="primary" v-if="method==='password' && !flag.flag">提交修改</el-button>
         <el-button @click="telNext" class="submit" size="mini" type="primary" v-if="method==='tel'">下一步</el-button>
     </el-form>
 </div>
@@ -79,6 +82,10 @@ export default {
                 flag: false,
                 time: null,
                 maxtime: 60,
+            },
+            flag: {
+                flag: false,//控制密码修改邮箱
+                message: '',
             },
             rules: {
                 oldPassword: [
@@ -168,7 +175,8 @@ export default {
             this.$refs['request'].validate((valid) => {
                 if(valid) {
                     this.axios.post("student/changeEmail", res=>{
-                        this.$message.success(res.data + " " + res.message)
+                        this.flag.message = res.data + " " + res.message
+                        this.flag.flag = true;
                     }, this.request)
                 } else return false
             })

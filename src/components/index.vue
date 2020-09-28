@@ -66,6 +66,11 @@ export default {
           this.loginout()
           this.$message('退出登录成功')
         }
+        if(command === 'Personal') {
+          this.$router.push({
+            path: 'my-info'
+          })
+        }
       }
     }
 }
