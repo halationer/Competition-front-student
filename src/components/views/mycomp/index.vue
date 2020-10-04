@@ -3,8 +3,9 @@
         <!-- 顶部操作栏 -->
         <el-row class="top-row">
             <el-row>
+                <!-- 竞赛类别选择 -->
                 <el-col :span="5">
-                    <el-select v-model="show.type">
+                    <el-select v-model="search.type" @change="getSearch()">
                         <el-option
                         v-for="item in types"
                         :key="item.value"
@@ -32,26 +33,26 @@
             <el-table-column label="竞赛名称" min-width="100px">
                 <template slot-scope="scope">
                     <span @click="compInfo(scope.row.competitionId)" title="点击查看竞赛详情" id="compInfo">
-                        {{scope.row.competitionName}}
+                        {{scope.row.compName}}
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column prop="createTime" label="报名时间" min-width="200px"></el-table-column>
-            <el-table-column prop="teamName" label="队伍名称" v-if="show.type">
+            <el-table-column prop="createTime" label="报名时间" width="200px"></el-table-column>
+            <el-table-column prop="teamName" label="队伍名称" v-if="search.type == 2">
                 <template slot-scope="scope">
-                    <el-tooltip class="item" effect="dark" content="提示文字" placement="right" :enterable="false">
+                    <el-tooltip class="item" effect="dark" :content="scope.row.studentName" placement="right" :enterable="false">
                         <span>{{scope.row.teamName}}</span>
                     </el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column prop="captainName" label="队长" v-if="show.type"></el-table-column>
+            <el-table-column prop="captainName" label="队长" v-if="search.type == 2"></el-table-column>
+            <el-table-column prop="studentName" label="参赛人" v-else></el-table-column>
             <el-table-column label="状态" min-width="120px">
                 <template slot-scope="scope">
                     <i class="el-icon-remove" v-if="!scope.row.active">未提交</i>
                     <div v-else>
                         <i class="el-icon-success" v-if="scope.row.verify===1">审核通过</i>
-                        <i class="el-icon-error" v-if="scope.row.verify===2">审核未通过</i>
-                        <i class="el-icon-warning" v-if="scope.row.verify===3">正在审核</i>
+                        <i class="el-icon-error" v-if="scope.row.verify===2">审核驳回</i>
                         <i class="el-icon-warning" v-if="!scope.row.verify">待审核</i>
                     </div>
                 </template>
@@ -69,106 +70,56 @@
                 </template>
             </el-table-column>
         </el-table>
-        
-        <!-- 分页导航 两个request参数需要sync同步（双向绑定）-->
-        <el-pagination
-            background
-            layout="sizes, prev, pager, next"
-            :page-sizes="[5, 10, 20, 40]"
-            :page-count="show.pageCount"
-            :page-size.sync="request.pageSize"
-            :current-page.sync="request.pageNum"
-            @current-change="getPage()"
-            @size-change="getPage()">
-        </el-pagination>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             search: {
                 name : null,
+                type : 0,
             },
             //请求参数
             request: {
-                withPage : true,
-                pageSize : 5,
-                pageNum : 1,
-                name: null,
+                studentId: null,
+                compType: null,
+                compName: null,
             },
             types: [{
-                value: 1,
+                value: 0,
+                label: '-',
+            }, {
+                value: 2,
                 label: '团队比赛',
             },{
-                value: 0,
+                value: 1,
                 label: '个人比赛',
             }],
             //用于显示的数据
-            show: {
-                type: 1,
-                pageCount : 1,
-                items:  [
-                    {
-                        competitionName: "黑桥杯",
-                        createTime: "yyyy-MM-dd HH:mm:ss",
-                        verify: 0,
-                        active: 0,
-                    },
-                    {
-                        competitionName: "蓝桥杯",
-                        createTime: "yyyy-MM-dd HH:mm:ss",
-                        verify: 0,
-                        active: 1,
-                    },
-                    {
-                        competitionName: "绿桥杯",
-                        createTime: "yyyy-MM-dd HH:mm:ss",
-                        verify: 1,
-                        active: 1,
-                    },
-                    {
-                        competitionName: "红桥杯",
-                        createTime: "yyyy-MM-dd HH:mm:ss",
-                        verify: 2,
-                        active: 1,
-                    },
-                    // {
-                    //     competitionName: "黄桥杯",
-                    //     createTime: "yyyy-MM-dd HH:mm:ss",
-                    //     verify: 3,
-                    //     active: 1,
-                    // },
-                    {
-                        competitionName: "紫桥杯",
-                        createTime: "yyyy-MM-dd HH:mm:ss",
-                        verify: 0,
-                        active: 1,
-                        teamName: "哈哈哈",
-                    }
-                ],
-            },
+            show: {items:[]},
         }
+    },
+    computed: {
+        ...mapGetters(['getNumId']),
     },
     methods: {
         getPage(otherback=()=>{}) {
-
             //发送分页查询请求
-            this.axios.get('ums-role/list', res=>{
-                let data = res.data
-                this.show.items = data.records
-                this.request.pageSize = data.size
-                this.request.pageNum = data.current
-                this.show.pageCount = data.pages
+            this.axios.get('student/list-sign', res=>{
+                this.show.items = res.data
                 otherback()
             }, this.request)
         },
         getSearch() {
+            this.show.items = []
 
             //修改请求数据
-            this.request.pageNum = 1
-            this.request.name = this.search.name
+            this.request.compType = this.search.type ? this.search.type : null
+            this.request.compName = this.search.name
+            console.log(this.request)
 
             //发送请求
             this.getPage()
@@ -184,7 +135,8 @@ export default {
         }
     },
     created() {
-        // this.getPage()
+        this.request.studentId = this.getNumId
+        this.getPage()
     }
 }
 </script>
