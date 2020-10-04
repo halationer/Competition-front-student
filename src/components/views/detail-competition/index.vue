@@ -66,7 +66,11 @@ export default {
        this.$router.push('/competitions')
     }, 
     submmit() {
-        this.$router.replace('/form')
+        this.$router.push({
+        path: "/form",
+        name: "Form",
+        params: {id: this.id}
+      })
     }
   }
 }

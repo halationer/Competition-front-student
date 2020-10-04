@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="8">
         <el-button round @click="back">
-          <i class="el-icon-arrow-left el-icon--left"></i>返回
+          <i class="el-icon-arrow-left el-icon--left" @click="back()"></i>返回
         </el-button>
       </el-col>
       <el-col :span="6" :offset="1">
@@ -79,6 +79,7 @@
 export default {
   data() {
     return {
+      id: this.$route.params.id,
       form: {
         name: "",
         region: "",
@@ -91,10 +92,20 @@ export default {
       },
     };
   },
+  created() {
+     
+  },
   methods: {
     onSubmit() {
       console.log("submit!");
     },
+    back() {
+        this.$router.push({
+        path: "/detail",
+        name: "Detail",
+        params: {id: this.id}
+      })
+    }
   },
 };
 </script>

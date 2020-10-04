@@ -141,8 +141,7 @@ export default {
       this.getData()
     },
     clearSearch() {
-      this.query.name = ""
-      this.query.pageNo = 1
+      this.clean()
       this.getData()
     },
     getData() {

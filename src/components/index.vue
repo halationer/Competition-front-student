@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="8" :offset="8">燕山大学竞赛管理系统</el-col>
         <el-col :span="6" :offset="2">
-          <el-dropdown split-button type="primary" @command="handleCommand">
+          <el-dropdown split-button  @command="handleCommand" >
             {{name}}
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="Personal">个人设置</el-dropdown-item>
