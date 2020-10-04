@@ -132,6 +132,10 @@ export default {
         },
         compInfo(compId) {
             console.log(compId)
+            this.$router.push({
+                path: "/detail",
+                query: {id: compId}
+            })
         }
     },
     created() {

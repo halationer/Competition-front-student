@@ -51,7 +51,7 @@ export default {
           startTime:'',
           endTime:'',
       },
-      id: this.$route.params.id
+      id: this.$route.params.id || this.$route.query.id
     }
   },
   created() {
