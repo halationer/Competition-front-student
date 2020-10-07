@@ -61,7 +61,7 @@
             <!-- 修改和单项删除操作 -->
             <el-table-column label="操作"  min-width="200px">
                 <template slot-scope="scope">
-                    <el-button @click="showTable(scope.row)" size="mini" type="primary" plain>查看报名表</el-button>
+                    <el-button @click="showTable(scope.row.id,scope.row.competitionId)" size="mini" type="primary" plain>查看报名表</el-button>
                     <div v-if="scope.row.active&&!scope.row.verify" id="btn-wrap">
                         <el-popconfirm @onConfirm="cancel(scope.row.id)" title="确定要撤销报名吗？">
                             <el-button size="mini" type="danger" slot="reference">撤销报名</el-button>
@@ -124,8 +124,15 @@ export default {
             //发送请求
             this.getPage()
         },
-        showTable(row) {
-            console.log(row)
+        showTable(signid,compid) {
+            this.$router.push({
+                name:"DetailSign",
+                path:"/detail-sign",
+                query: {
+                    signId: signid,
+                    compId: compid
+                }
+            })
         },
         cancel(id) {
             console.log(id)

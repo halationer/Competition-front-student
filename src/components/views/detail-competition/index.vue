@@ -33,8 +33,8 @@
     <el-divider content-position="left">详细介绍</el-divider>
     <el-row>
         <el-col :span="16" :offset="4"> 
-            <div class="detail">
-        {{item.detail}}
+            <div v-html="item.detail">
+        
        </div>
         </el-col>
     </el-row>
@@ -52,11 +52,13 @@ export default {
           endTime:'',
       },
       id: this.$route.params.id || this.$route.query.id
+      
     }
   },
   created() {
      this.axios.get('/competition/getById',res=>{
          this.item = res.data[0]
+         //this.type = this.item.type
      },
      { id: this.id }
      )
@@ -69,7 +71,7 @@ export default {
         this.$router.push({
         path: "/form",
         name: "Form",
-        params: {id: this.id}
+        params: {id: this.id , name: this.item.name}
       })
     }
   }

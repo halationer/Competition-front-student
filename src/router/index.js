@@ -53,6 +53,10 @@ export default new Router({
             path: "/change-success",
             name: "ChangeSuccess",
             component: () => import('@/components/views/verify/pages/success')
+          },{
+            path: "/detail-sign",
+            name: "DetailSign",
+            component: () => import('@/components/views/detail-sign')
           }
       ]
     },
