@@ -99,12 +99,7 @@ export default {
       this.axios.post('/sign/submit',res=>{
          if(res.code == 200){
            alert("报名成功！")
-           this.$router.push(
-            { 
-              path:"/my-comp",
-             name:"Mycomp"
-             }
-           )
+           this.$router.replace('/my-comp')
          }
       },{str: JSON.stringify(this.form), active: JSON.stringify(this.activeParams)})
     },
