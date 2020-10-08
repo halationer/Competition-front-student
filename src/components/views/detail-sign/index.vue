@@ -5,7 +5,7 @@
            <el-button round @click="back()"><i class="el-icon-arrow-left el-icon--left"></i>返回</el-button>
         </el-col>
         <el-col :span="8" :offset="1">
-           <div class="title">{{this.request.teamName}}</div>
+           <div class="title">{{this.form.teamName}}</div>
         </el-col>
         <el-col :span="1" :offset="4">
            <el-button  type="primary" v-if="this.verifyFlag" round @click="update()" :disabled="!disable"> 修改报名表</el-button>
@@ -60,7 +60,6 @@
 								<el-col :span="4">
 									<el-input v-model="form[lab['model']][index]" :disabled="disable"></el-input>
 								</el-col>
-                
 							</div>
 						</el-col>
 					</div>
@@ -128,19 +127,19 @@ export default {
       console.log(this.request)
       this.form = this.optionItem
      
-       let studentId = res.data[0].studentId.split(',')
-       let studentName = res.data[0].studentName.split(',')
+      let studentId = res.data[0].studentId.split(',')
+      let studentName = res.data[0].studentName.split(',')
       if(this.request.compType === 2){
-       studentId.splice(0,1)
-       studentName.splice(0,1)
+        studentId.splice(0,1)
+        studentName.splice(0,1)
 
-       this.form.captainId = this.request.captainId
-       this.form.captainName = this.request.captainName
-       this.form.teamName = this.request.teamName
+        this.$set(this.form, 'captainId' , this.request.captainId)
+        this.$set(this.form,'captainName' ,this.request.captainName)
+        this.$set(this.form,'teamName' , this.request.teamName)
        
       }
-      this.form.studentId = studentId
-      this.form.studentName = studentName
+      this.$set(this.form,'studentId' , studentId)
+      this.$set(this.form,'studentName', studentName)
      // this.getStuName()
       this.form.competitionId = this.request.competitionId
       this.form.Id = this.$route.query.signId

@@ -108,7 +108,7 @@ export default {
     methods: {
         getPage(otherback=()=>{}) {
             //发送分页查询请求
-            this.axios.get('student/list-sign', res=>{
+            this.axios.get('sign/self-list', res=>{
                 this.show.items = res.data
                 otherback()
             }, this.request)

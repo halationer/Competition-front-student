@@ -13,7 +13,7 @@
 
       <el-menu-item index="/my-comp">
         <i class="el-icon-s-home"></i>
-        <span slot="title">我的竞赛</span>
+        <span slot="title">我的报名</span>
       </el-menu-item>
       
       <el-menu-item index="/my-info">
