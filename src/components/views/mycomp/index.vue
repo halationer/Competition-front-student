@@ -63,7 +63,7 @@
                 <template slot-scope="scope">
                     <el-button @click="showTable(scope.row.id,scope.row.competitionId)" size="mini" type="primary" plain>查看报名表</el-button>
                     <div v-if="scope.row.active&&!scope.row.verify" id="btn-wrap">
-                        <el-popconfirm @onConfirm="cancel(scope.row.id)" title="确定要撤销报名吗？">
+                        <el-popconfirm @onConfirm="cancel(scope.row)" title="确定要撤销报名吗？">
                             <el-button size="mini" type="danger" slot="reference">撤销报名</el-button>
                         </el-popconfirm>
                     </div>
@@ -134,8 +134,10 @@ export default {
                 }
             })
         },
-        cancel(id) {
-            console.log(id)
+        cancel(sign) {
+            this.axios.post('sign/cancel', ()=>{
+                this.getPage()
+            }, sign)
         },
         compInfo(compId) {
             console.log(compId)
