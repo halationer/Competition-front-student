@@ -30,7 +30,7 @@
             style="width: 100%"> <!--这里必不能带()-->
 
             <!-- 属性列 -->
-            <el-table-column label="竞赛名称" min-width="100px">
+            <el-table-column label="竞赛名称" min-width="150px">
                 <template slot-scope="scope">
                     <span @click="compInfo(scope.row.competitionId)" title="点击查看竞赛详情" id="compInfo">
                         {{scope.row.compName}}
