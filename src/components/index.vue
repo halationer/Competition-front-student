@@ -33,7 +33,7 @@ export default {
     name: 'Index',
     data() {
         return {
-          name: ''
+          name: '未登录'
         }
     },
     components: {
