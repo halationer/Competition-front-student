@@ -161,10 +161,12 @@ export default {
     },
     level(levelname) {
       this.query.levelName = levelname
+      this.$set(this.query, 'pageNo' ,1)
       this.getData()
     },
     type(typename) {
       this.query.typeName = typename
+      this.$set(this.query, 'pageNo' ,1)
       this.getData()
     },
     closeLevel() {
