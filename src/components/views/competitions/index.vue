@@ -68,7 +68,7 @@
         :key="item.val"
         :offset="index % 4 > 0 ? 1 : 0">
         <br />
-        <el-card :body-style="{ padding: '0px' }">
+        <el-card :body-style="{ padding: '0px',height:'325px' }" >
           <img :src="item.image" class="image" style="height:230px; width=100px;"/>
           <div style="padding: 14px">
             <span>{{ item.name }}</span>
@@ -189,11 +189,13 @@ export default {
 .time {
   font-size: 13px;
   color: #999;
+
 }
 
 .bottom {
   margin-top: 13px;
   line-height: 12px;
+  
 }
 
 .button {
@@ -210,6 +212,7 @@ export default {
 .clearfix:after {
   display: table;
   content: "";
+
 }
 
 .clearfix:after {
