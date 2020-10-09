@@ -2,7 +2,8 @@ import router from '@/router'
 import store from '@/vuex'
 const whitelist = [
   '/login',
-  '/verify-success',
+  '/change',
+  '/change-success',
 ]
 router.beforeEach((to,from,next) => {
 
