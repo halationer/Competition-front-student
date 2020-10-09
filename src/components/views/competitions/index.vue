@@ -137,7 +137,7 @@ export default {
     },
     getSearch() {
       this.query.name = this.search.name
-      this.query.pageNo = 1
+      this.$set(this.query, 'pageNo' ,1)
       this.getData()
     },
     clearSearch() {
